@@ -34,7 +34,7 @@ def main_menu():
     screen.blit(text, text_rect)
 
     pygame.display.update()
-    return start_button
+    return start_button,exit_button
 
 
 
