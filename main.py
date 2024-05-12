@@ -22,7 +22,7 @@ game_active = True
 pygame.mixer.music.set_volume(0.2)
 move_sound = pygame.mixer.Sound('./sounds/свайп.mp3')
 reload_sound = pygame.mixer.Sound('./sounds/reload.wav')
-victory_sound = pygame.mixer.Sound('./sounds/victory.wav')
+victory_sound = pygame.mixer.Sound('./sounds/victory.mp3')
 pygame.mixer.music.load('./sounds/фон.mp3')
 pygame.mixer.music.play(-1)
 
