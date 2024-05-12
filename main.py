@@ -3,6 +3,7 @@ import pygame
 from game import random_board, check_win, find_empty_square
 from mainmenu import main_menu
 from settingsmenu import settings_menu
+from winmenu import win_menu
 import sys
 
 pygame.init()
@@ -50,11 +51,16 @@ def run_game(initial_board):
         if check_win(game_board):
             victory_sound.set_volume(0.3)
             victory_sound.play()
-            font = pygame.font.Font(None, 36)
-            text = font.render("Вы выиграли!!!!", True, red)
-            text_rect = text.get_rect(center=(200, 200))
-            screen.blit(text, text_rect)
-            game_active = False
+            win_menu_button = win_menu(screen, moves)
+            pygame.display.update()
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if win_menu_button.collidepoint(event.pos):
+                            return
         pygame.display.update()
 
         screen.fill(white)
@@ -76,20 +82,20 @@ def run_game(initial_board):
         pygame.display.update()
 
 def run_settings():
-    settings_menu_active = True  # Переменная для отслеживания активации меню настроек
-    while settings_menu_active:  # Цикл для отображения меню с настройками
-        back_button = settings_menu(screen)  # Передаем экран в функцию settings_menu
+    settings_menu_active = True 
+    while settings_menu_active:
+        back_button = settings_menu(screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.collidepoint(event.pos):
-                    settings_menu_active = False  # При нажатии кнопки "Back" возвращаемся в главное меню
+                    settings_menu_active = False
 
 main_menu_active = True
 while main_menu_active:
-    start_button, settings_button, exit_button = main_menu(screen)  # Передаем экран в функцию main_menu
+    start_button, settings_button, exit_button = main_menu(screen)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -102,6 +108,6 @@ while main_menu_active:
                 pygame.quit()
                 sys.exit()
             elif settings_button.collidepoint(event.pos):
-                run_settings()  # Запускаем функцию для отображения меню с настройками
+                run_settings()
 
 pygame.quit()
