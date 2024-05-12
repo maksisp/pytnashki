@@ -9,6 +9,11 @@ def main_menu(screen):
     text_rect = text.get_rect(center=(200, 200))
     screen.blit(text, text_rect)
 
+    logo = pygame.image.load('logo.jpg')
+    logo = pygame.transform.scale(logo, (150, 150))  # Изменили размер логотипа
+    logo_rect = logo.get_rect(center=(200, 100))  # Расположили логотип над надписью
+    screen.blit(logo, logo_rect)
+
     button_width = 200
     button_height = 50
 
@@ -30,7 +35,7 @@ def main_menu(screen):
     text_rect = text.get_rect(center=exit_button.center)
     screen.blit(text, text_rect)
 
-    
+
     pygame.display.update()
     return start_button, settings_button, exit_button
 
