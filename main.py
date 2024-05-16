@@ -16,8 +16,8 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
 
-#game_board =  [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, ' '], [13, 14, 15, 12]] # проверка проверки на победу
-game_board = random_board()
+game_board =  [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, ' '], [13, 14, 15, 12]] # проверка проверки на победу
+#game_board = random_board()
 
 moves = 0
 game_active = True
@@ -29,6 +29,7 @@ pygame.mixer.music.load('./sounds/фон.mp3')
 pygame.mixer.music.play(-1)
 
 def run_game(initial_board):
+    global main_menu_active
     game_board = initial_board
     moves = 0
     game_active = True
@@ -37,7 +38,8 @@ def run_game(initial_board):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN and game_active:
                 x, y = event.pos
                 i, j = y // 100, x // 100
@@ -50,20 +52,12 @@ def run_game(initial_board):
                         
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    random_board()
                     game_board = random_board()
-                    for i  in range(4):
-                        for j  in range(4):
-                            if game_board[i][j] != ' ':
-                                pygame.draw.rect(screen, (0, 0,255), (j * 100, i * 100, 100, 100), 1)
-                                font = pygame.font.Font(None, 36)
-                                text = font.render(str(game_board[i][j]), True, black)
-                                text_rect = text.get_rect(center=(j * 100 + 50, i * 100 + 50))
-                                screen.blit(text, text_rect)
-                                reload_sound.play()
-                                game_active = True
-                                moves = 0
-                                pygame.display.update()
+                    moves = 0
+                    game_active = True
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
+                    main_menu_active = True
                 
         if check_win(game_board):
             victory_sound.set_volume(0.3)
@@ -99,6 +93,7 @@ def run_game(initial_board):
         pygame.display.update()
 
 def run_settings():
+    global main_menu_active
     music_on = True
     settings_menu_active = True 
     while settings_menu_active:
@@ -110,6 +105,7 @@ def run_settings():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.collidepoint(event.pos):
                     settings_menu_active = False
+                    main_menu_active = True
                 elif music_on_button.collidepoint(event.pos):
                     if not music_on:
                         pygame.mixer.music.play(-1)
@@ -118,6 +114,10 @@ def run_settings():
                     if music_on:
                         pygame.mixer.music.stop()
                         music_on = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    settings_menu_active = False
+                    main_menu_active = True
 
 main_menu_active = True
 while main_menu_active:
