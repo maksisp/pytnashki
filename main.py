@@ -99,9 +99,10 @@ def run_game(initial_board):
         pygame.display.update()
 
 def run_settings():
+    music_on = True
     settings_menu_active = True 
     while settings_menu_active:
-        back_button = settings_menu(screen)
+        back_button, music_on_button, music_off_button = settings_menu(screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -109,6 +110,14 @@ def run_settings():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.collidepoint(event.pos):
                     settings_menu_active = False
+                elif music_on_button.collidepoint(event.pos):
+                    if not music_on:
+                        pygame.mixer.music.play(-1)
+                        music_on = True
+                elif music_off_button.collidepoint(event.pos):
+                    if music_on:
+                        pygame.mixer.music.stop()
+                        music_on = False
 
 main_menu_active = True
 while main_menu_active:
