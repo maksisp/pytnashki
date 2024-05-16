@@ -47,7 +47,24 @@ def run_game(initial_board):
                         game_board[i][j], game_board[empty_i][empty_j] = game_board[empty_i][empty_j], game_board[i][j]
                         move_sound.play()
                         moves += 1
-
+                        
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    random_board()
+                    game_board = random_board()
+                    for i  in range(4):
+                        for j  in range(4):
+                            if game_board[i][j] != ' ':
+                                pygame.draw.rect(screen, (0, 0,255), (j * 100, i * 100, 100, 100), 1)
+                                font = pygame.font.Font(None, 36)
+                                text = font.render(str(game_board[i][j]), True, black)
+                                text_rect = text.get_rect(center=(j * 100 + 50, i * 100 + 50))
+                                screen.blit(text, text_rect)
+                                reload_sound.play()
+                                game_active = True
+                                moves = 0
+                                pygame.display.update()
+                
         if check_win(game_board):
             victory_sound.set_volume(0.3)
             victory_sound.play()
