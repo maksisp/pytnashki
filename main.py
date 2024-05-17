@@ -64,14 +64,17 @@ def run_game(initial_board):
             victory_sound.play()
             win_menu_button = win_menu(screen, moves)
             pygame.display.update()
-            while True:
+            win_menu_active = True
+            while win_menu_active:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if win_menu_button.collidepoint(event.pos):
-                            return
+                            win_menu_active = False
+                            running = False
+                            main_menu_active = True
         pygame.display.update()
 
         screen.fill(white)
