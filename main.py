@@ -81,7 +81,7 @@ def run_game(game_board):
                     
 
                    
-            if check_win(game_board):
+            if check_win(game_board) and win_count < 1:
                 running = False
                 victory_sound.set_volume(0.3)
                 victory_sound.play()
@@ -89,7 +89,6 @@ def run_game(game_board):
                 win_count =  1
                 win_menu_active = True
                 moves = 0
-                pygame.display.update()
                 while win_menu_active:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
@@ -97,13 +96,12 @@ def run_game(game_board):
                             sys.exit()
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if win_menu_button.collidepoint(event.pos):
+                                running = False
                                 win_menu_active = False
                                 main_menu_active = True
-                                pygame.display.update()
+                                
                             
         
-        pygame.display.update()
-
         screen.fill(white)
 
         for i in range(4):
@@ -119,8 +117,8 @@ def run_game(game_board):
         text = font.render(f"Ходы: {moves}", True, black)
         text_rect = text.get_rect(center=(200, 450))
         screen.blit(text, text_rect)
-
         pygame.display.update()
+
 
 def run_settings():
     global main_menu_active, filled
