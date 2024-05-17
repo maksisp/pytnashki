@@ -19,7 +19,8 @@ red = (255, 0, 0)
 #game_board =  [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, ' '], [13, 14, 15, 12]] # проверка проверки на победу
 game_board = random_board()
 save_board =  [[]]
-
+music_filled = False
+sound_filled = False
 win_count = 0
 moves = 0
 saved = 0
@@ -121,11 +122,12 @@ def run_game(game_board):
 
 
 def run_settings():
-    global main_menu_active, filled
-    filled = False
+    global main_menu_active, music_filled, sound_filled
+    music_filled = False
+    sound_filled = False
     settings_menu_active = True 
     while settings_menu_active:
-        back_button, music_mark = settings_menu(screen,filled)
+        back_button, music_mark, sound_mark = settings_menu(screen,music_filled, sound_filled)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -134,24 +136,27 @@ def run_settings():
                 if back_button.collidepoint(event.pos):
                     settings_menu_active = False
                     main_menu_active = True
-                #elif music_on_button.collidepoint(event.pos):
-                    #if not music_on:
-                        #pygame.mixer.music.play(-1)
-                        #music_on = True
-                #elif music_off_button.collidepoint(event.pos):
-                    #if music_on:
-                        #pygame.mixer.music.stop()
-                        #music_on = False
-                elif music_mark.collidepoint(event.pos):
-                    filled = not filled
-                    if not filled:
+                if music_mark.collidepoint(event.pos):
+                    music_filled = not music_filled
+                    if not music_filled:
                         pygame.mixer.music.play(-1)
                     else:
                         pygame.mixer.music.stop()
+                elif sound_mark.collidepoint(event.pos):
+                    sound_filled = not sound_filled
+                    if not sound_filled:
+                        move_sound.set_volume(1)
+                        reload_sound.set_volume(1)
+                        victory_sound.set_volume(1)
+                    else:
+                        move_sound.set_volume(0.0)
+                        reload_sound.set_volume(0.0)
+                        victory_sound.set_volume(0.0)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     settings_menu_active = False
                     main_menu_active = True
+
 
 main_menu_active = True
 while main_menu_active:
@@ -169,5 +174,6 @@ while main_menu_active:
                 sys.exit()
             elif settings_button.collidepoint(event.pos):
                 run_settings()
+
 
 pygame.quit()
