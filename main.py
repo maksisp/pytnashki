@@ -18,8 +18,11 @@ red = (255, 0, 0)
 
 #game_board =  [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, ' '], [13, 14, 15, 12]] # проверка проверки на победу
 game_board = random_board()
+save_board =  [[]]
 
+win_count = 0
 moves = 0
+saved = 0
 game_active = True
 pygame.mixer.music.set_volume(0.2)
 move_sound = pygame.mixer.Sound('./sounds/свайп.mp3')
@@ -28,11 +31,22 @@ victory_sound = pygame.mixer.Sound('./sounds/victory.mp3')
 pygame.mixer.music.load('./sounds/фон.mp3')
 pygame.mixer.music.play(-1)
 
-def run_game(initial_board):
-    global main_menu_active
-    game_board = initial_board
-    moves = 0
+def run_game(game_board):
+    global main_menu_active , moves , win_count , saved , save_board
     game_active = True
+    
+    if win_count == 1:
+        game_board = random_board()
+        #game_board =  [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, ' '], [13, 14, 15, 12]] # проверка проверки на победу
+        win_count = 0 
+    
+    if saved == 1:
+        game_board = save_board
+        saved = 0
+        
+
+
+        
 
     running = True
     while running:
@@ -49,32 +63,45 @@ def run_game(initial_board):
                         game_board[i][j], game_board[empty_i][empty_j] = game_board[empty_i][empty_j], game_board[i][j]
                         move_sound.play()
                         moves += 1
-                        
+                     
+            
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     game_board = random_board()
+                    reload_sound.play()
                     moves = 0
                     game_active = True
-                elif event.key == pygame.K_ESCAPE:
+            if event.type == pygame.KEYDOWN:   
+                if event.key == pygame.K_ESCAPE:
+                    save_board = game_board
+                    saved = 1
                     running = False
                     main_menu_active = True
-                
-        if check_win(game_board):
-            victory_sound.set_volume(0.3)
-            victory_sound.play()
-            win_menu_button = win_menu(screen, moves)
-            pygame.display.update()
-            win_menu_active = True
-            while win_menu_active:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if win_menu_button.collidepoint(event.pos):
-                            win_menu_active = False
-                            running = False
-                            main_menu_active = True
+                    
+                    
+
+                   
+            if check_win(game_board):
+                running = False
+                victory_sound.set_volume(0.3)
+                victory_sound.play()
+                win_menu_button = win_menu(screen, moves) 
+                win_count =  1
+                win_menu_active = True
+                moves = 0
+                pygame.display.update()
+                while win_menu_active:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if win_menu_button.collidepoint(event.pos):
+                                win_menu_active = False
+                                main_menu_active = True
+                                pygame.display.update()
+                            
+        
         pygame.display.update()
 
         screen.fill(white)
